@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import TaskSerializer
 
+from rest_framework.decorators import api_view
+
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     permission_classes = [
@@ -11,10 +13,10 @@ class TaskViewSet(viewsets.ModelViewSet):
     ]
     serializer_class = TaskSerializer
 
-class TaskCreate(APIView):
-    def post(self,request):
-        task = request.data.get('task')
-        serializer = TaskSerializer(data=task)
-        if serializer.is_valid(raise_exception=True):
-            task_saved = serializer.save()
-        return Response({"success":"Tasks '{}' created successfully".format(task_saved.title)})
+@api_view(['POST'])
+def taskCreate(request):
+	serializer = TaskSerializer(data=request.data)
+	if serializer.is_valid():
+		serializer.save()
+
+	return Response(serializer.data)
