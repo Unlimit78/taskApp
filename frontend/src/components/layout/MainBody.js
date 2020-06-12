@@ -20,6 +20,7 @@ export class MainBody extends Component{
 
     this.openForm = this.openForm.bind(this);
     this.openTask = this.openTask.bind(this);
+    this.CloseTask = this.CloseTask.bind(this);
 
 
 
@@ -50,17 +51,26 @@ export class MainBody extends Component{
         const { opened } = this.state;
 		this.setState({
 			opened: !opened,
+            activeEl:''
 		});
     }
 
-    openTask(pk){
+    openTask(id){
 
         const { openedTask } = this.state;
 		this.setState({
 			openedTask: !openedTask,
-            activeEl: pk
+            opened:false,
+            activeEl: id
 		});
 
+    }
+
+    CloseTask(){
+        this.setState({
+
+            activeEl: ''
+		});
     }
 
 
@@ -70,14 +80,19 @@ export class MainBody extends Component{
         const { opened } = this.state;
         const { openedTask} = this.state;
         const { activeEl } = this.state;
+        var  exact_task = tasks.find(task => task.id === activeEl);
 
 
         return (
             <div className="container-fluid">
             <div className="row">
-                {openedTask &&(
+                {activeEl &&(
                     <div className="col" id="info-block">
-                        Hello
+                        <span onClick={this.CloseTask} >Close</span>
+                        <p>{exact_task.title}</p>
+                        <p>{exact_task.body}</p>
+                        <p>{exact_task.updated}</p>
+                        <p>{exact_task.status}</p>
                     </div>
                 )}
 
@@ -92,8 +107,9 @@ export class MainBody extends Component{
                             {this.state.data.map(task =>
 
 
-                            <li key={task.pk} onClick={(pk) => this.openTask(task.pk)} className="list-group-item justify-content-center align-items-center d-flex" >
+                            <li key={task.id} onClick={(id) => this.openTask(task.id)} className="list-group-item justify-content-center align-items-center d-flex" >
                                 {task.title}
+                                {task.id}
                             </li>
 
                             )}
